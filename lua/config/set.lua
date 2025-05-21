@@ -76,11 +76,16 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 
 vim.opt.wrap = false
+vim.opt.textwidth = 90
+vim.opt.linebreak = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
 vim.opt.undofile = true
+
+-- spell file location
+vim.opt.spellfile = vim.fn.stdpath 'config' .. '/spell/en.utf-8.add'
 
 vim.opt.hlsearch = false
 vim.opt.incsearch = true

@@ -7,9 +7,7 @@
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
 return {
-  -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
-  -- NOTE: And you can specify dependencies as well
   dependencies = {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
@@ -88,16 +86,56 @@ return {
 
       -- You can provide additional configuration to the handlers,
       -- see mason-nvim-dap README for more information
-      handlers = {},
-
+      handlers = {
+        function(config)
+          -- all sources with no handler get passed here
+          -- Keep original functionality
+          require('mason-nvim-dap').default_setup(config)
+        end,
+        firefox = function(config)
+          config.configurations =
+            {
+              name = 'Firefox: Debug',
+              type = 'firefox',
+              request = 'launch',
+              reAttach = true,
+              url = 'http://localhost:8080',
+              webRoot = '${workspaceFolder}',
+              firefoxExecutable = vim.fn.exepath 'firefox',
+            }, require('mason-nvim-dap').default_setup(config) -- don't forget this!
+        end,
+        node2 = function(config)
+          config.configurations = {
+            {
+              name = 'Node2: Launch',
+              type = 'node2',
+              request = 'launch',
+              program = '${file}',
+              cwd = vim.fn.getcwd(),
+              sourceMaps = true,
+              protocol = 'inspector',
+              console = 'integratedTerminal',
+            },
+            {
+              -- For this to work you need to make sure the node process is started with the `--inspect` flag.
+              name = 'Node2: Attach to process',
+              type = 'node2',
+              request = 'attach',
+              processId = require('dap.utils').pick_process,
+            },
+          }
+          require('mason-nvim-dap').default_setup(config) -- don't forget this!
+        end,
+      },
       -- You'll need to check that you have the required things installed
       -- online, please don't ask me how to install them :)
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'python',
+        'node2',
       },
     }
-
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
@@ -123,19 +161,23 @@ return {
     -- Change breakpoint icons
     vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
     vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
-    local breakpoint_icons = vim.g.have_nerd_font 
+    local breakpoint_icons = vim.g.have_nerd_font
         and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
-        or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
+      or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
     for type, icon in pairs(breakpoint_icons) do
-        local tp = 'Dap' .. type
-        local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
-        vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
+      local tp = 'Dap' .. type
+      local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
+      vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
     end
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
+    -- close Dap UI with :DapCloseUI
+    vim.api.nvim_create_user_command('DapToggleUI', function()
+      require('dapui').toggle()
+    end, {})
     -- Install golang specific config
     require('dap-go').setup {
       delve = {},
