@@ -2,6 +2,14 @@ local helpers = require 'helper_functions.luasnip'
 local get_date = helpers.get_ISO_8601_date
 local get_visual = helpers.get_visual
 
+local tex = {}
+tex.in_mathzone = function()
+  return vim.fn['vimtex#syntax#in_mathzone']() == 1
+end
+tex.in_text = function()
+  return not tex.in_mathzone()
+end
+
 -- A logical OR of `line_begin` and the regTrig '[^%a]trig'
 function line_begin_or_non_letter(line_to_cursor, matched_trigger)
   local line_begin = line_to_cursor:sub(1, -(#matched_trigger + 1)):match '^%s*$'
@@ -10,27 +18,6 @@ function line_begin_or_non_letter(line_to_cursor, matched_trigger)
 end
 
 return {
-  --[[
-  -- Paired parentheses
-  s({ trig = '(', wordTrig = false, snippetType = 'autosnippet' }, {
-    t '(',
-    d(1, get_visual),
-    t ')',
-  }),
-  -- Paired curly braces
-  s({ trig = '{', wordTrig = false, snippetType = 'autosnippet' }, {
-    t '{',
-    d(1, get_visual),
-    t '}',
-  }),
-  -- Paired square brackets
-  s({ trig = '[', wordTrig = false, snippetType = 'autosnippet' }, {
-    t '[',
-    d(1, get_visual),
-    t ']',
-  }),
-  -- Paired double quotes
-  --]]
   s(
     { trig = '"', wordTrig = false, snippetType = 'autosnippet', priority = 2000 },
     fmta('"<>"', {
@@ -74,18 +61,6 @@ return {
         ]
         ]],
       { d(1, get_visual) }
-    )
-  ),
-  -- em dash
-  s({ trig = '---', wordTrig = false }, { t '—' }),
-  -- Lorem ipsum
-  s(
-    { trig = 'lipsum' },
-    fmta(
-      [[
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        ]],
-      {}
     )
   ),
 }

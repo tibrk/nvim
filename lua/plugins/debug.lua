@@ -60,6 +60,13 @@ return {
       desc = 'Debug: Toggle Breakpoint',
     },
     {
+      '<leader>w',
+      function()
+        require('dapui').elements.watches.add(vim.fn.expand '<cword>')
+      end,
+      desc = 'Debug: Set Breakpoint',
+    },
+    {
       '<leader>B',
       function()
         require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
@@ -134,6 +141,7 @@ return {
         'delve',
         'python',
         'node2',
+        'jq',
       },
     }
     -- Dap UI setup

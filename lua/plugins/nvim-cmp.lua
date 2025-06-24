@@ -23,6 +23,7 @@ return {
           'rafamadriz/friendly-snippets',
           config = function()
             require('luasnip.loaders.from_vscode').lazy_load()
+            require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/LuaSnip/' }
           end,
         },
       },
@@ -40,7 +41,26 @@ return {
     -- See `:help cmp`
     local cmp = require 'cmp'
     local luasnip = require 'luasnip'
-    luasnip.config.setup {}
+    luasnip.config.setup {
+      -- Also load both lua and json when a markdown-file is opened,
+      -- javascript for html.
+      -- Other filetypes just load themselves.
+      load_ft_func = require('luasnip.extras.filetype_functions').extend_load_ft {
+        markdown = { 'lua', 'json' },
+        html = { 'javascript' },
+      },
+    }
+    luasnip.config.set_config {
+      -- Don't store snippet history for less overhead
+      history = false,
+      -- Allow autotrigger snippets
+      enable_autosnippets = true,
+      -- For equivalent of UltiSnips visual selection
+      store_selection_keys = '<Tab>',
+      -- Event on which to check for exiting a snippet's region
+      region_check_events = 'InsertEnter',
+      delete_check_events = 'InsertLeave',
+    }
 
     cmp.setup {
       snippet = {

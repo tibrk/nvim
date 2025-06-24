@@ -257,6 +257,11 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
+      'prettier',
+      'black',
+      'pylint',
+      'eslint_d',
+      'markdownlint',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -266,6 +271,19 @@ return {
       handlers = {
         function(server_name)
           local server = servers[server_name] or {}
+          -- Configure pycodestyle line length
+
+          if server_name == 'pyright' or server_name == 'pylsp' then
+            server.settings = {
+              python = {
+                linting = {
+                  pycodestyle = {
+                    maxLineLength = 88,
+                  },
+                },
+              },
+            }
+          end
           -- This handles overriding only values explicitly passed
           -- by the server configuration above. Useful when disabling
           -- certain features of an LSP (for example, turning off formatting for ts_ls)
