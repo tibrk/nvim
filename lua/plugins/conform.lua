@@ -38,9 +38,8 @@ return {
       json = { 'prettier' },
       css = { 'prettier' },
       html = { 'prettier' },
-      markdown = { 'prettier' },
       graphql = { 'prettier' },
-      yaml = { 'prettier' },
+      yaml = { 'yamlfmt' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -48,6 +47,9 @@ return {
     formatters = {
       black = {
         prepend_args = { '--line-length', '88' },
+      },
+      yamlfmt = {
+        prepend_args = { '-formatter', 'indentless_arrays=true' },
       },
     },
   },
