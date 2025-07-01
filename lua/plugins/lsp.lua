@@ -212,7 +212,6 @@ return {
       -- But for many setups, the LSP (`ts_ls`) will work just fine
       ts_ls = {},
       --
-
       lua_ls = {
         -- cmd = { ... },
         -- filetypes = { ... },
@@ -227,10 +226,8 @@ return {
           },
         },
       },
-      ltex = {
-        on_attach = on_attach,
+      ltex_plus = {
         cmd = { 'ltex-ls' },
-        filetypes = { 'markdown', 'text', 'tex' },
         settings = {
           ltex = {
             dictionary = {
@@ -280,12 +277,13 @@ return {
               python = {
                 linting = {
                   pycodestyle = {
-                    maxLineLength = 88,
+                    maxLineLength = 100,
                   },
                 },
               },
             }
           end
+
           -- This handles overriding only values explicitly passed
           -- by the server configuration above. Useful when disabling
           -- certain features of an LSP (for example, turning off formatting for ts_ls)
