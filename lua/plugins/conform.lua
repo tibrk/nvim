@@ -43,6 +43,8 @@ return {
       sh = { 'shellcheck' },
       bash = { 'shellcheck' },
       zsh = { 'shellcheck' },
+      xml = { 'xmlformatter' },
+      java = { 'google-java-format' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -53,6 +55,9 @@ return {
       },
       yamlfmt = {
         prepend_args = { '-formatter', 'indentless_arrays=true' },
+      },
+      ['google-java-format'] = {
+        prepend_args = { '--aosp' }, -- Ensure 4-space indentation
       },
     },
   },

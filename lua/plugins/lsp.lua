@@ -277,7 +277,7 @@ return {
               python = {
                 linting = {
                   pycodestyle = {
-                    maxLineLength = 100,
+                    maxLineLength = 88,
                   },
                 },
               },

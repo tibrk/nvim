@@ -1,9 +1,26 @@
 return {
   'yetone/avante.nvim',
   event = 'VeryLazy',
-  lazy = false,
-  version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
-  opts = {},
+  lazy = true,
+  version = '*', -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+  mode = 'agentic',
+  opts = {
+    provider = 'copilot',
+    providers = {
+      copilot = {
+        model = 'claude-3.7-sonnet',
+      },
+    },
+    workspace_context = {
+      enable = true, -- Enable workspace context featureNeotree
+      include_patterns = { '**/*' }, -- Include all files in workspace
+      exclude_patterns = { 'node_modules/**', '.git/**', '.venv' }, -- Exclude common large directories
+      max_files = 100, -- Maximum number of files to include in context
+    },
+    behaviour = {
+      auto_suggestions = false, -- Experimental stage
+    },
+  },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = 'make',
   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows

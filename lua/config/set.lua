@@ -89,3 +89,7 @@ vim.opt.spellfile = vim.fn.stdpath 'config' .. '/spell/en.utf-8.add'
 
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
+
+-- Disable netrw completely
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
