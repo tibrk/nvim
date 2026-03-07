@@ -13,7 +13,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.api.nvim_create_autocmd('VimEnter', {
-  command = 'set nornu nonu | Neotree reveal',
+  callback = function()
+    if vim.fn.argc(-1) == 1 and vim.fn.isdirectory(vim.fn.argv(0)) ~= 0 then
+      require('neo-tree').setup {
+        filesystem = {
+          hijack_netrw_behavior = 'open_current',
+        },
+      }
+    end
+  end,
 })
 
 vim.api.nvim_create_autocmd('BufNewFile', {
@@ -38,4 +46,15 @@ vim.api.nvim_create_autocmd('BufNewFile', {
 
 vim.api.nvim_create_autocmd('BufEnter', {
   command = 'set rnu nu',
+})
+
+-- Enable word wrap only for prose filetypes
+vim.api.nvim_create_autocmd('FileType', {
+  desc = 'Enable word wrap for prose filetypes',
+  group = vim.api.nvim_create_augroup('filetype_wrap', { clear = true }),
+  pattern = { 'markdown', 'text', 'tex' },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+  end,
 })

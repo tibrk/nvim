@@ -8,7 +8,7 @@ return {
     { 'williamboman/mason.nvim', opts = {} },
     'williamboman/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-
+    { 'nvim-java/nvim-java', opts = {} },
     -- Useful status updates for LSP.
     { 'j-hui/fidget.nvim', opts = {} },
 
@@ -185,33 +185,12 @@ return {
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
-    -- Enable the following language servers
-    --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-    --
-    --  Add any additional override configuration in the following tables. Available keys are:
-    --  - cmd (table): Override the default command used to start the server
-    --  - filetypes (table): Override the default list of associated filetypes for the server
-    --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-    --  - settings (table): Override the default settings passed when initializing the server.
-    --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local words = {}
     for word in io.open(vim.fn.stdpath 'config' .. '/spell/en.utf-8.add', 'r'):lines() do
       table.insert(words, word)
     end
 
     local servers = {
-      clangd = {},
-      gopls = {},
-      pyright = {},
-      -- rust_analyzer = {},
-      -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-      --
-      -- Some languages (like typescript) have entire language plugins that can be useful:
-      --    https://github.com/pmizio/typescript-tools.nvim
-      --
-      -- But for many setups, the LSP (`ts_ls`) will work just fine
-      ts_ls = {},
-      --
       lua_ls = {
         -- cmd = { ... },
         -- filetypes = { ... },
@@ -227,9 +206,9 @@ return {
         },
       },
       ltex_plus = {
-        cmd = { 'ltex-ls' },
         settings = {
           ltex = {
+            language = 'en-US',
             dictionary = {
               ['en-US'] = words,
             },
@@ -261,36 +240,76 @@ return {
       'eslint_d',
       'markdownlint',
       'yamllint',
+      'ltex-ls-plus',
     })
-    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+    -- Automatically install default config
     require('mason-lspconfig').setup {
       ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
       automatic_installation = false,
       handlers = {
         function(server_name)
           local server = servers[server_name] or {}
-          -- Configure pycodestyle line length
-
-          if server_name == 'pyright' or server_name == 'pylsp' then
-            server.settings = {
-              python = {
-                linting = {
-                  pycodestyle = {
-                    maxLineLength = 88,
-                  },
-                },
-              },
-            }
-          end
-
           -- This handles overriding only values explicitly passed
           -- by the server configuration above. Useful when disabling
           -- certain features of an LSP (for example, turning off formatting for ts_ls)
           server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
+          vim.lsp.config(server_name, server)
         end,
       },
     }
+
+    vim.lsp.config('jdtls', {
+      cmd = { 'jdtls' },
+      cmd_env = {
+        -- Ensure jdtls runs with JDK 24
+        JAVA_HOME = '/opt/homebrew/opt/openjdk@24/libexec/openjdk.jdk/Contents/Home',
+      },
+      settings = {
+        java = {
+          configuration = {
+            -- IMPORTANT: `path` must point to the JDK home directory, not the `java` binary
+            -- On macOS with Homebrew, the JDK home is typically under:
+            --   /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+            -- If you use a different JDK (e.g., openjdk@21), adjust the path accordingly.
+            runtimes = {
+              { name = 'JavaSE-21', path = '/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home' },
+              {
+                name = 'JavaSE-24',
+                path = '/opt/homebrew/opt/openjdk@24/libexec/openjdk.jdk/Contents/Home',
+                default = true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    -- Apply custom config
+    vim.lsp.config('lua_ls', {
+      -- Server-specific settings. See `:help lsp-quickstart`
+      settings = {
+        ['Lua'] = {
+          completion = {
+            callSnippet = 'Replace',
+          },
+          -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+          diagnostics = { disable = { 'missing-fields' } },
+        },
+      },
+    })
+    vim.lsp.config('ltex_plus', {
+      -- Server-specific settings. See `:help lsp-quickstart`
+      settings = {
+        ['ltex'] = {
+          language = 'en-US',
+          dictionary = {
+            ['en-US'] = words,
+          },
+        },
+      },
+      flags = { debounce_text_changes = 300 },
+    })
   end,
 }
