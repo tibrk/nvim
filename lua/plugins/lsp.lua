@@ -205,6 +205,20 @@ return {
           },
         },
       },
+      texlab = {
+        settings = {
+          texlab = {
+            build = {
+              onSave = false, -- Let VimTeX handle building
+            },
+            latexFormatter = 'latexindent',
+            latexindent = {
+              ['local'] = vim.fn.stdpath('config') .. '/config/.latexindent.yaml',
+            },
+            bibtexFormatter = 'texlab',
+          },
+        },
+      },
       ltex_plus = {
         settings = {
           ltex = {

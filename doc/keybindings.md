@@ -2,147 +2,218 @@
 
 This document provides a comprehensive overview of all keybindings configured in this Neovim setup, organized by category.
 
+**Leader key**: `<Space>`
+
 ## Table of Contents
 
+- [General](#general)
+- [Clipboard and Registers](#clipboard-and-registers)
+- [Movement and Navigation](#movement-and-navigation)
+- [Window and Tmux Navigation](#window-and-tmux-navigation)
 - [File Navigation](#file-navigation)
-- [Code Intelligence](#code-intelligence)
+- [Search and Find](#search-and-find)
+- [Code Intelligence (LSP)](#code-intelligence-lsp)
 - [Editing and Formatting](#editing-and-formatting)
 - [Git Integration](#git-integration)
-- [Search and Find](#search-and-find)
 - [Debugging](#debugging)
 - [Miscellaneous Tools](#miscellaneous-tools)
 
+## General
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<Esc>` | Normal | Clear search highlights | remap.lua |
+| `<Esc><Esc>` | Terminal | Exit terminal mode | remap.lua |
+| `Q` | Normal | Disabled (no-op) | remap.lua |
+| `<leader>q` | Normal | Open diagnostic quickfix list | remap.lua |
+| `<leader>pv` | Normal | Open netrw file explorer | remap.lua |
+| `<leader>s` | Normal | Search and replace word under cursor | remap.lua |
+| `<leader>x` | Normal | Make current file executable | remap.lua |
+| `<Leader>ü` | All | Reload LuaSnip snippets | remap.lua |
+
+## Clipboard and Registers
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>y` | Normal, Visual | Yank to system clipboard | remap.lua |
+| `<leader>Y` | Normal | Yank line to system clipboard | remap.lua |
+| `<leader>p` | Visual | Paste over selection without yanking it | remap.lua |
+| `<leader>d` | Normal, Visual | Delete to black hole register | remap.lua |
+
+## Movement and Navigation
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `J` | Visual | Move selected lines down | remap.lua |
+| `K` | Visual | Move selected lines up | remap.lua |
+| `<C-k>` | Normal | Next quickfix item (centered) | remap.lua |
+| `<C-j>` | Normal | Previous quickfix item (centered) | remap.lua |
+| `<leader>k` | Normal | Next location list item (centered) | remap.lua |
+| `<leader>j` | Normal | Previous location list item (centered) | remap.lua |
+
+## Window and Tmux Navigation
+
+These keybindings navigate between Neovim splits and Tmux panes seamlessly.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<C-h>` | Normal | Navigate left (window/tmux pane) | vim-tmux-navigator.lua |
+| `<C-j>` | Normal | Navigate down (window/tmux pane) | vim-tmux-navigator.lua |
+| `<C-k>` | Normal | Navigate up (window/tmux pane) | vim-tmux-navigator.lua |
+| `<C-l>` | Normal | Navigate right (window/tmux pane) | vim-tmux-navigator.lua |
+| `<C-\>` | Normal | Navigate to previous tmux pane | vim-tmux-navigator.lua |
+
 ## File Navigation
 
-### Telescope File Navigation
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>sf` | Search Files |
-| `<leader>s.` | Search Recent Files |
-| `<leader><leader>` | Find existing buffers |
-| `<leader>sn` | Search Neovim files |
+### Telescope
 
-### Harpoon File Navigation
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>a` | Add file to harpoon |
-| `<leader>r` | Remove file from harpoon |
-| `<C-S-P>` | Navigate to previous file in harpoon |
-| `<C-S-N>` | Navigate to next file in harpoon |
-| `<C-e>` | Open harpoon window |
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>sf` | Normal | Search files | telescope.lua |
+| `<leader>s.` | Normal | Search recent files | telescope.lua |
+| `<leader><leader>` | Normal | Find existing buffers | telescope.lua |
+| `<leader>sn` | Normal | Search Neovim config files | telescope.lua |
 
-### File Explorer
-| Keybinding | Description |
-|------------|-------------|
-| `\` | Toggle Neo-tree file explorer |
+### Harpoon
 
-## Code Intelligence
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>a` | Normal | Add file to Harpoon list | harpoon.lua |
+| `<leader>r` | Normal | Remove file from Harpoon list | harpoon.lua |
+| `<C-S-P>` | Normal | Navigate to previous Harpoon buffer | harpoon.lua |
+| `<C-S-N>` | Normal | Navigate to next Harpoon buffer | harpoon.lua |
+| `<C-e>` | Normal | Open Harpoon window (via Telescope) | harpoon.lua |
 
-### LSP Navigation
-| Keybinding | Description |
-|------------|-------------|
-| `gd` | Go to Definition |
-| `gr` | Go to References |
-| `gI` | Go to Implementation |
-| `<leader>D` | Type Definition |
-| `gD` | Go to Declaration |
+### Neo-tree
 
-### LSP Features
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>ds` | Document Symbols |
-| `<leader>ws` | Workspace Symbols |
-| `<leader>rn` | Rename symbol |
-| `<leader>ca` | Code Action (normal and visual modes) |
-| `<leader>th` | Toggle Inlay Hints |
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>e` | Normal | Toggle Neo-tree file explorer | neo-tree.lua |
 
-## Editing and Formatting
+**Neo-tree window-local keybindings** (active only inside the Neo-tree panel):
 
-### Code Formatting
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>f` | Format buffer (normal and visual modes) |
-
-### Completion and Snippets
-| Keybinding | Description | Mode |
-|------------|-------------|------|
-| `<C-n>` | Select next item | Insert |
-| `<C-p>` | Select previous item | Insert |
-| `<C-b>` | Scroll docs backward | Insert |
-| `<C-f>` | Scroll docs forward | Insert |
-| `<Tab>` | Confirm selection | Insert |
-| `<C-Space>` | Trigger completion | Insert |
-| `<C-l>` | Expand snippet or jump forward | Insert |
-| `<C-h>` | Jump backward in snippet | Insert |
-
-## Git Integration
-
-### Navigation
-| Keybinding | Description |
-|------------|-------------|
-| `]c` | Jump to next git change |
-| `[c` | Jump to previous git change |
-
-### Hunk Management
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>hs` | Stage hunk (normal and visual modes) |
-| `<leader>hr` | Reset hunk (normal and visual modes) |
-| `<leader>hS` | Stage buffer |
-| `<leader>hu` | Undo stage hunk |
-| `<leader>hR` | Reset buffer |
-| `<leader>hp` | Preview hunk |
-
-### Git Information
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>hb` | Blame line |
-| `<leader>hd` | Diff against index |
-| `<leader>hD` | Diff against last commit |
-| `<leader>tb` | Toggle current line blame |
-| `<leader>tD` | Toggle preview hunk inline |
+| Keybinding | Description | Source |
+|------------|-------------|--------|
+| `l` | Open file or directory | neo-tree.lua |
+| `h` | Close node | neo-tree.lua |
+| `<Space>` | Disabled (prevents leader conflict) | neo-tree.lua |
+| `Y` | Copy file path to system clipboard | neo-tree.lua |
+| `O` | Open with system application | neo-tree.lua |
+| `P` | Toggle preview | neo-tree.lua |
 
 ## Search and Find
 
 ### Telescope Search
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>sh` | Search Help tags |
-| `<leader>sk` | Search Keymaps |
-| `<leader>ss` | Search Select Telescope |
-| `<leader>sw` | Search current Word |
-| `<leader>sg` | Search by Grep |
-| `<leader>sd` | Search Diagnostics |
-| `<leader>sr` | Search Resume |
-| `<leader>/` | Fuzzy find in current buffer |
-| `<leader>s/` | Search in open files |
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>sh` | Normal | Search help tags | telescope.lua |
+| `<leader>sk` | Normal | Search keymaps | telescope.lua |
+| `<leader>ss` | Normal | Search select Telescope builtin | telescope.lua |
+| `<leader>sw` | Normal | Search current word | telescope.lua |
+| `<leader>sg` | Normal | Search by grep | telescope.lua |
+| `<leader>sd` | Normal | Search diagnostics | telescope.lua |
+| `<leader>sr` | Normal | Search resume (reopen last search) | telescope.lua |
+| `<leader>/` | Normal | Fuzzy find in current buffer | telescope.lua |
+| `<leader>s/` | Normal | Search (grep) in open files | telescope.lua |
+
+## Code Intelligence (LSP)
+
+### LSP Navigation
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `gd` | Normal | Go to definition | lsp.lua |
+| `gr` | Normal | Go to references | lsp.lua |
+| `gI` | Normal | Go to implementation | lsp.lua |
+| `gD` | Normal | Go to declaration | lsp.lua |
+| `<leader>D` | Normal | Type definition | lsp.lua |
+
+### LSP Features
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>ds` | Normal | Document symbols | lsp.lua |
+| `<leader>ws` | Normal | Workspace symbols | lsp.lua |
+| `<leader>rn` | Normal | Rename symbol | lsp.lua |
+| `<leader>ca` | Normal, Visual | Code action | lsp.lua |
+| `<leader>th` | Normal | Toggle inlay hints | lsp.lua |
+
+## Editing and Formatting
+
+### Code Formatting
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>f` | All | Format buffer (async, LSP fallback) | conform.lua |
+
+### Completion and Snippets
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<C-n>` | Insert | Select next completion item | nvim-cmp.lua |
+| `<C-p>` | Insert | Select previous completion item | nvim-cmp.lua |
+| `<C-b>` | Insert | Scroll docs backward | nvim-cmp.lua |
+| `<C-f>` | Insert | Scroll docs forward | nvim-cmp.lua |
+| `<Tab>` | Insert | Confirm completion selection | nvim-cmp.lua |
+| `<C-Space>` | Insert | Trigger completion manually | nvim-cmp.lua |
+| `<C-l>` | Insert, Select | Expand snippet or jump forward | nvim-cmp.lua |
+| `<C-h>` | Insert, Select | Jump backward in snippet | nvim-cmp.lua |
+
+## Git Integration
+
+### Navigation
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `]c` | Normal | Jump to next git change | gitsigns.lua |
+| `[c` | Normal | Jump to previous git change | gitsigns.lua |
+
+### Hunk Management
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>hs` | Normal, Visual | Stage hunk | gitsigns.lua |
+| `<leader>hr` | Normal, Visual | Reset hunk | gitsigns.lua |
+| `<leader>hS` | Normal | Stage entire buffer | gitsigns.lua |
+| `<leader>hu` | Normal | Undo stage hunk | gitsigns.lua |
+| `<leader>hR` | Normal | Reset entire buffer | gitsigns.lua |
+| `<leader>hp` | Normal | Preview hunk | gitsigns.lua |
+
+### Git Information
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>hb` | Normal | Blame current line | gitsigns.lua |
+| `<leader>hd` | Normal | Diff against index | gitsigns.lua |
+| `<leader>hD` | Normal | Diff against last commit | gitsigns.lua |
+| `<leader>tb` | Normal | Toggle current line blame | gitsigns.lua |
+| `<leader>tD` | Normal | Toggle deleted lines inline preview | gitsigns.lua |
 
 ## Debugging
 
 ### Debug Controls
-| Keybinding | Description |
-|------------|-------------|
-| `<F5>` | Debug: Start/Continue |
-| `<F11>` | Debug: Step Into |
-| `<F10>` | Debug: Step Over |
-| `<F12>` | Debug: Step Out |
-| `<F7>` | Toggle debug UI |
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<F5>` | Normal | Start / Continue | debug.lua |
+| `<F11>` | Normal | Step into | debug.lua |
+| `<F10>` | Normal | Step over | debug.lua |
+| `<F12>` | Normal | Step out | debug.lua |
+| `<F7>` | Normal | Toggle DAP UI | debug.lua |
 
 ### Breakpoints
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>b` | Toggle Breakpoint |
-| `<leader>w` | Add watch expression |
-| `<leader>B` | Set conditional breakpoint |
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>b` | Normal | Toggle breakpoint | debug.lua |
+| `<leader>B` | Normal | Set conditional breakpoint | debug.lua |
+| `<leader>w` | Normal | Add word under cursor to watches | debug.lua |
 
 ## Miscellaneous Tools
 
 ### Undotree
-| Keybinding | Description |
-|------------|-------------|
-| `<leader>u` | Toggle Undotree |
 
----
-
-**Note**: `<leader>` key is typically mapped to the spacebar unless configured otherwise.
-
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>u` | Normal | Toggle Undotree | undotree.lua |

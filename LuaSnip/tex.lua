@@ -111,7 +111,7 @@ return {
   ),
   -- ACRONYM
   s(
-    { trig = 'acc', snippetType = 'autosnippet' },
+    { trig = 'acr', snippetType = 'autosnippet' },
     fmta(
       [[
       \ac{<>}
@@ -122,7 +122,7 @@ return {
     )
   ),
   s(
-    { trig = 'nacc', snippetType = 'autosnippet' },
+    { trig = 'nacr', snippetType = 'autosnippet' },
     fmta(
       [[
       \acro{<>}[<>]{<>}      ]],

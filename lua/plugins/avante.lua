@@ -1,4 +1,6 @@
-return {
+return {}
+--[[ return {
+  disable = true,
   'yetone/avante.nvim',
   event = 'VeryLazy',
   lazy = true,
@@ -8,7 +10,7 @@ return {
     provider = 'copilot',
     providers = {
       copilot = {
-        model = 'gpt-4.1',
+        model = 'claude-sonnet-4.6',
       },
     },
     workspace_context = {
@@ -62,3 +64,4 @@ return {
     },
   },
 }
+]]
