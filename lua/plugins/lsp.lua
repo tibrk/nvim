@@ -260,6 +260,7 @@ return {
       'shellcheck',
       'xmlformatter',
       'google-java-format',
+      'jdtls',
       'ltex-ls-plus',
     })
 
