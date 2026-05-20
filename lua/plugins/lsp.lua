@@ -249,11 +249,17 @@ return {
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
       'prettier',
+      'prettierd',
       'black',
+      'isort',
       'pylint',
       'eslint_d',
       'markdownlint',
       'yamllint',
+      'yamlfmt',
+      'shellcheck',
+      'xmlformatter',
+      'google-java-format',
       'ltex-ls-plus',
     })
 
@@ -274,27 +280,23 @@ return {
       },
     }
 
+    local java_runtimes = {}
+    if vim.env.JDK21_HOME then
+      table.insert(java_runtimes, { name = 'JavaSE-21', path = vim.env.JDK21_HOME })
+    end
+    if vim.env.JDK24_HOME then
+      table.insert(java_runtimes, { name = 'JavaSE-24', path = vim.env.JDK24_HOME, default = true })
+    end
+
     vim.lsp.config('jdtls', {
       cmd = { 'jdtls' },
       cmd_env = {
-        -- Ensure jdtls runs with JDK 24
-        JAVA_HOME = '/opt/homebrew/opt/openjdk@24/libexec/openjdk.jdk/Contents/Home',
+        JAVA_HOME = vim.env.JDK24_HOME or vim.env.JAVA_HOME,
       },
       settings = {
         java = {
           configuration = {
-            -- IMPORTANT: `path` must point to the JDK home directory, not the `java` binary
-            -- On macOS with Homebrew, the JDK home is typically under:
-            --   /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
-            -- If you use a different JDK (e.g., openjdk@21), adjust the path accordingly.
-            runtimes = {
-              { name = 'JavaSE-21', path = '/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home' },
-              {
-                name = 'JavaSE-24',
-                path = '/opt/homebrew/opt/openjdk@24/libexec/openjdk.jdk/Contents/Home',
-                default = true,
-              },
-            },
+            runtimes = java_runtimes,
           },
         },
       },
