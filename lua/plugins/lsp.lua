@@ -261,6 +261,7 @@ return {
       'xmlformatter',
       'google-java-format',
       'ltex-ls-plus',
+      'jdtls',
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -284,14 +285,14 @@ return {
     if vim.env.JDK21_HOME then
       table.insert(java_runtimes, { name = 'JavaSE-21', path = vim.env.JDK21_HOME })
     end
-    if vim.env.JDK24_HOME then
-      table.insert(java_runtimes, { name = 'JavaSE-24', path = vim.env.JDK24_HOME, default = true })
+    if vim.env.JDK25_HOME then
+      table.insert(java_runtimes, { name = 'JavaSE-25', path = vim.env.JDK25_HOME, default = true })
     end
 
     vim.lsp.config('jdtls', {
       cmd = { 'jdtls' },
       cmd_env = {
-        JAVA_HOME = vim.env.JDK24_HOME or vim.env.JAVA_HOME,
+        JAVA_HOME = vim.env.JDK25_HOME or vim.env.JAVA_HOME,
       },
       settings = {
         java = {
