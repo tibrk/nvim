@@ -213,7 +213,7 @@ return {
             },
             latexFormatter = 'latexindent',
             latexindent = {
-              ['local'] = vim.fn.stdpath('config') .. '/config/.latexindent.yaml',
+              ['local'] = vim.fn.stdpath 'config' .. '/config/.latexindent.yaml',
             },
             bibtexFormatter = 'texlab',
           },
@@ -260,7 +260,6 @@ return {
       'shellcheck',
       'xmlformatter',
       'google-java-format',
-      'jdtls',
       'ltex-ls-plus',
     })
 
