@@ -98,7 +98,11 @@ return {
         -- Manually trigger a completion from nvim-cmp.
         --  Generally you don't need this, because nvim-cmp will display
         --  completions whenever it has completion options available.
+        --  <C-Space> is tmux's prefix key, so it won't reach Neovim with a single
+        --  press there; <S-Space> is the primary trigger, <C-Space> kept as a
+        --  fallback for outside tmux.
         ['<C-Space>'] = cmp.mapping.complete {},
+        ['<S-Space>'] = cmp.mapping.complete {},
 
         -- Think of <c-l> as moving to the right of your snippet expansion.
         --  So if you have a snippet that's like:
