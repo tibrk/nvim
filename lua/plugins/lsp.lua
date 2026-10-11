@@ -8,7 +8,12 @@ return {
     { 'williamboman/mason.nvim', opts = {} },
     'williamboman/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    { 'nvim-java/nvim-java', opts = {} },
+    {
+      'nvim-java/nvim-java',
+      opts = (vim.env.JDK25_HOME or vim.env.JDK21_HOME) and {
+        jdk = { auto_install = false, path = vim.env.JDK25_HOME or vim.env.JDK21_HOME },
+      } or {},
+    },
     -- Useful status updates for LSP.
     { 'j-hui/fidget.nvim', opts = {} },
 
@@ -184,6 +189,10 @@ return {
     --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+    -- Broadcast these capabilities as the default for every server.
+    -- (mason-lspconfig no longer accepts a `handlers` table in `setup()`, so this
+    -- is the only place capabilities get applied now.)
+    vim.lsp.config('*', { capabilities = capabilities })
 
     local words = {}
     for word in io.open(vim.fn.stdpath 'config' .. '/spell/en.utf-8.add', 'r'):lines() do
@@ -258,6 +267,7 @@ return {
       'yamllint',
       'yamlfmt',
       'shellcheck',
+      'shfmt',
       'xmlformatter',
       'google-java-format',
       'ltex-ls-plus',
@@ -265,21 +275,16 @@ return {
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-    -- Automatically install default config
+    -- mason-lspconfig only understands `ensure_installed` / `automatic_enable` now;
+    -- it auto-enables (via `vim.lsp.enable`) every LSP it has installed.
     require('mason-lspconfig').setup {
       ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-      automatic_installation = false,
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          -- This handles overriding only values explicitly passed
-          -- by the server configuration above. Useful when disabling
-          -- certain features of an LSP (for example, turning off formatting for ts_ls)
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          vim.lsp.config(server_name, server)
-        end,
-      },
     }
+
+    -- Apply our per-server settings (capabilities already come from the '*' default above).
+    for server_name, server in pairs(servers) do
+      vim.lsp.config(server_name, server)
+    end
 
     local java_runtimes = {}
     if vim.env.JDK21_HOME then
@@ -289,11 +294,14 @@ return {
       table.insert(java_runtimes, { name = 'JavaSE-25', path = vim.env.JDK25_HOME, default = true })
     end
 
+    -- NOTE: `cmd`/`cmd_env` are deliberately NOT set here. nvim-java registers its own
+    -- function-based `cmd` for jdtls (to inject lombok, java-test, java-debug-adapter and
+    -- spring-boot-tools) and its own JDK resolution (see the `jdk` opts on the nvim-java
+    -- dependency above) -- setting `cmd`/`cmd_env` here would overwrite that function and
+    -- silently fall back to a bare `jdtls` binary with none of nvim-java's bundles.
+    -- `runtimes` below is a separate, additive setting: which JDKs are available for
+    -- *project* source/target compatibility, not which JDK runs the language server itself.
     vim.lsp.config('jdtls', {
-      cmd = { 'jdtls' },
-      cmd_env = {
-        JAVA_HOME = vim.env.JDK25_HOME or vim.env.JAVA_HOME,
-      },
       settings = {
         java = {
           configuration = {
@@ -301,32 +309,6 @@ return {
           },
         },
       },
-    })
-
-    -- Apply custom config
-    vim.lsp.config('lua_ls', {
-      -- Server-specific settings. See `:help lsp-quickstart`
-      settings = {
-        ['Lua'] = {
-          completion = {
-            callSnippet = 'Replace',
-          },
-          -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-          diagnostics = { disable = { 'missing-fields' } },
-        },
-      },
-    })
-    vim.lsp.config('ltex_plus', {
-      -- Server-specific settings. See `:help lsp-quickstart`
-      settings = {
-        ['ltex'] = {
-          language = 'en-US',
-          dictionary = {
-            ['en-US'] = words,
-          },
-        },
-      },
-      flags = { debounce_text_changes = 300 },
     })
   end,
 }

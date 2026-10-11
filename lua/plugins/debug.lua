@@ -18,6 +18,7 @@ return {
     -- Installs the debug adapters for you
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
+    -- JS/TS debugging (wraps vscode-js-debug, installed via Mason as `js-debug-adapter`)
     'mxsdev/nvim-dap-vscode-js',
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
@@ -111,28 +112,6 @@ return {
               firefoxExecutable = vim.fn.exepath 'firefox',
             }, require('mason-nvim-dap').default_setup(config) -- don't forget this!
         end,
-        node2 = function(config)
-          config.configurations = {
-            {
-              name = 'Node2: Launch',
-              type = 'node2',
-              request = 'launch',
-              program = '${file}',
-              cwd = vim.fn.getcwd(),
-              sourceMaps = true,
-              protocol = 'inspector',
-              console = 'integratedTerminal',
-            },
-            {
-              -- For this to work you need to make sure the node process is started with the `--inspect` flag.
-              name = 'Node2: Attach to process',
-              type = 'node2',
-              request = 'attach',
-              processId = require('dap.utils').pick_process,
-            },
-          }
-          require('mason-nvim-dap').default_setup(config) -- don't forget this!
-        end,
       },
       -- You'll need to check that you have the required things installed
       -- online, please don't ask me how to install them :)
@@ -140,10 +119,35 @@ return {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
         'python',
-        'node2',
-        'jq',
+        'js',
       },
     }
+
+    -- JS/TS debugging. `node2`/vscode-node-debug2 is long dead upstream; this uses the
+    -- actively maintained vscode-js-debug via nvim-dap-vscode-js, with the `js-debug-adapter`
+    -- binary that Mason just installed (resolved from PATH, no manual build needed).
+    require('dap-vscode-js').setup {
+      adapters = { 'pwa-node' },
+      debugger_cmd = { 'js-debug-adapter' },
+    }
+    for _, language in ipairs { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' } do
+      dap.configurations[language] = {
+        {
+          type = 'pwa-node',
+          request = 'launch',
+          name = 'Launch file',
+          program = '${file}',
+          cwd = '${workspaceFolder}',
+        },
+        {
+          type = 'pwa-node',
+          request = 'attach',
+          name = 'Attach to process',
+          processId = require('dap.utils').pick_process,
+          cwd = '${workspaceFolder}',
+        },
+      }
+    end
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {

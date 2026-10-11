@@ -14,6 +14,9 @@ return {
         python = { 'pylint' },
         yaml = { 'yamllint' },
         markdown = { 'markdownlint' },
+        sh = { 'shellcheck' },
+        bash = { 'shellcheck' },
+        zsh = { 'shellcheck' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

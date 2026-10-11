@@ -40,9 +40,9 @@ return {
       html = { 'prettier' },
       graphql = { 'prettier' },
       yaml = { 'yamlfmt' },
-      sh = { 'shellcheck' },
-      bash = { 'shellcheck' },
-      zsh = { 'shellcheck' },
+      sh = { 'shfmt' },
+      bash = { 'shfmt' },
+      zsh = { 'shfmt' },
       xml = { 'xmlformatter' },
       java = { 'google-java-format' },
       --
