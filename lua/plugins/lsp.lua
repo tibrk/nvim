@@ -189,10 +189,9 @@ return {
     -- is the only place capabilities get applied now.)
     vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities() })
 
-    local words = {}
-    for word in io.open(vim.fn.stdpath 'config' .. '/spell/en.utf-8.add', 'r'):lines() do
-      table.insert(words, word)
-    end
+    -- The spell file is gitignored, so it is missing on fresh clones
+    local spellfile = vim.fn.stdpath 'config' .. '/spell/en.utf-8.add'
+    local words = vim.fn.filereadable(spellfile) == 1 and vim.fn.readfile(spellfile) or {}
 
     local servers = {
       lua_ls = {
