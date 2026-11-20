@@ -65,7 +65,7 @@ return {
       function()
         require('dapui').elements.watches.add(vim.fn.expand '<cword>')
       end,
-      desc = 'Debug: Set Breakpoint',
+      desc = 'Debug: Add word to watches',
     },
     {
       '<leader>B',
